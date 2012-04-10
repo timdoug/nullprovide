@@ -1,0 +1,54 @@
+nullprovide -- a ZeroCater scraper
+by timdoug, me@timdoug.com
+==================================
+
+Problem: ZeroCater doesn't have an API.
+Solution: nullprovide!
+
+Requirements
+-----------
+* Python (tested on 2.7)
+* BeautifulSoup 3.x
+
+What works
+----------
+* Extracting meal name, date, people count, and restaurant
+* Multiple meals per day
+
+What doesn't
+------------
+* Years besides 2012
+* Other information on the meal, e.g., dishes and counts
+
+Use it on the command line (hey look it's valid JSON!)
+------------------------------------------------------
+$ python nullprovide.py bump
+[
+    {
+        "date": "2012-04-09 12:10:00", 
+        "num_people": 30, 
+        "name": "Meatloaf and Eggplant", 
+        "restaurant": "SSB Catering"
+    }, 
+    {
+        "date": "2012-04-12 12:00:00", 
+        "num_people": 30, 
+        "name": "Chinese", 
+        "restaurant": "Hangen Szechuan Restaurant"
+    }
+]
+
+Or in Python
+------------
+In [1]: from nullprovide import NullProvide
+
+In [2]: NullProvide('bump').meals
+Out[2]: 
+[{'date': datetime.datetime(2012, 4, 9, 12, 10),
+  'name': u'Meatloaf and Eggplant',
+  'num_people': 30,
+  'restaurant': u'SSB Catering'},
+ {'date': datetime.datetime(2012, 4, 12, 12, 0),
+  'name': u'Chinese',
+  'num_people': 30,
+  'restaurant': u'Hangen Szechuan Restaurant'}]

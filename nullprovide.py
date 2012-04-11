@@ -73,5 +73,5 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print 'usage: %s account_name' % sys.argv[0]
         sys.exit(1)
-    print json.dumps(NullProvide(sys.argv[1], string_dates=True).meals, indent=4)
+    print json.dumps(NullProvide(sys.argv[1], string_dates=True).meals, indent=4, sort_keys=True)
 

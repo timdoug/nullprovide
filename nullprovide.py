@@ -65,6 +65,18 @@ class NullProvide(object):
                                    'restaurant': self.__parse_restaurant(meal),
                                    'num_people': int(meal.find('span', 'num_people').text.split()[1]),
                                   })
+                cur_dishes = self.meals[-1]['dishes'] = []
+                for dish_html in meal.findAll('li', 'order-menu-item'):
+                    dish = {'quantity': int(dish_html.find('div', 'item_quantity').text),
+                            'name': self.unescape_html(dish_html.strong.text),
+                            }
+                    description_tag = dish_html.find('div', 'item-description')
+                    if description_tag:
+                        dish['description'] = self.unescape_html(description_tag.text)
+                    note_tag = dish_html.find('div', 'item-instructions')
+                    if note_tag:
+                        dish['note'] = self.unescape_html(note_tag.text[4:])
+                    cur_dishes.append(dish)
 
 
 if __name__ == '__main__':

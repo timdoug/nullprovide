@@ -11,13 +11,12 @@ Requirements
 
 What works
 ----------
-* Extracting meal name, date, people count, and restaurant
+* Extracting meal name, date, people count, restaurant, and dishes
 * Multiple meals per day
 
 What doesn't
 ------------
 * Years besides 2012
-* Other information on the meal, e.g., dishes and counts
 
 Use it on the command line (hey look it's valid JSON!)
 ------------------------------------------------------
@@ -25,29 +24,77 @@ $ python nullprovide.py bump
 [
     {
         "date": "2012-04-09 12:10:00", 
-        "num_people": 30, 
+        "dishes": [
+            {
+                "name": "Daily Special", 
+                "note": "Italian meatloaf, mashed potato, parmesan grilled asparagus, caesar salad", 
+                "quantity": 19
+            }, 
+            {
+                "name": "Vegetarian Daily Special", 
+                "note": "Baked eggplant, daily special sides", 
+                "quantity": 11
+            }
+        ], 
         "name": "Meatloaf and Eggplant", 
+        "num_people": 30, 
         "restaurant": "SSB Catering"
     }, 
     {
         "date": "2012-04-12 12:00:00", 
-        "num_people": 30, 
+        "dishes": [
+            {
+                "name": "Sesame Crispy Chicken", 
+                "quantity": 10
+            }, 
+            {
+                "name": "Han Gen Vegetarian Special (Spicy)", 
+                "quantity": 5
+            }, 
+            {
+                "name": "Broccoli in Hot Garlic Sauce with Minced Pork", 
+                "quantity": 9
+            }, 
+            {
+                "name": "Napa Cabbage with Tofu", 
+                "quantity": 6
+            }, 
+            {
+                "name": "Brown Rice", 
+                "quantity": 20
+            }
+        ], 
         "name": "Chinese", 
+        "num_people": 30, 
         "restaurant": "Hangen Szechuan Restaurant"
     }
 ]
 
+
 Or in Python
 ------------
+$ ipython
+...
 In [1]: from nullprovide import NullProvide
 
 In [2]: NullProvide('bump').meals
 Out[2]: 
 [{'date': datetime.datetime(2012, 4, 9, 12, 10),
+  'dishes': [{'name': u'Daily Special',
+    'note': u'Italian meatloaf, mashed potato, parmesan grilled asparagus, caesar salad',
+    'quantity': 19},
+   {'name': u'Vegetarian Daily Special',
+    'note': u'Baked eggplant, daily special sides',
+    'quantity': 11}],
   'name': u'Meatloaf and Eggplant',
   'num_people': 30,
   'restaurant': u'SSB Catering'},
  {'date': datetime.datetime(2012, 4, 12, 12, 0),
+  'dishes': [{'name': u'Sesame Crispy Chicken', 'quantity': 10},
+   {'name': u'Han Gen Vegetarian Special (Spicy)', 'quantity': 5},
+   {'name': u'Broccoli in Hot Garlic Sauce with Minced Pork', 'quantity': 9},
+   {'name': u'Napa Cabbage with Tofu', 'quantity': 6},
+   {'name': u'Brown Rice', 'quantity': 20}],
   'name': u'Chinese',
   'num_people': 30,
   'restaurant': u'Hangen Szechuan Restaurant'}]

@@ -1,12 +1,11 @@
 nullprovide -- a ZeroCater scraper
 by timdoug, me@timdoug.com
-==================================
 
 Problem: ZeroCater doesn't have an API.
 Solution: nullprovide!
 
 Requirements
------------
+------------
 * Python (tested on 2.7)
 * BeautifulSoup 3.x
 

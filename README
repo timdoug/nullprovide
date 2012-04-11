@@ -14,10 +14,6 @@ What works
 * Extracting meal name, date, people count, restaurant, and dishes
 * Multiple meals per day
 
-What doesn't
-------------
-* Years besides 2012
-
 Use it on the command line (hey look it's valid JSON!)
 ------------------------------------------------------
 $ python nullprovide.py bump

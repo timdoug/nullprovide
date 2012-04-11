@@ -45,7 +45,7 @@ class NullProvide(object):
         raw_time = meal.find('span', 'collapser-controller').text.split(':')
         hour, minute = int(raw_time[0]), int(raw_time[1][0:2])
         hour += 12 if 'p.m.' in raw_time[1] and hour != 12 else 0
-        out = datetime.datetime(2012, month, day, hour, minute, 0)
+        out = datetime.datetime(datetime.datetime.now().year, month, day, hour, minute)
         return str(out) if string_output else out
 
     @classmethod

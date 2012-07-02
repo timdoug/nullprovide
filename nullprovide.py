@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib2
 import datetime
-from HTMLParser import HTMLParser
 from bs4 import BeautifulSoup
 
 class NullProvide(object):

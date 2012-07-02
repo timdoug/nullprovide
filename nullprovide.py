@@ -28,62 +28,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import urllib2
 import datetime
 from HTMLParser import HTMLParser
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 class NullProvide(object):
 
-    __MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
-    MONTHS = dict(zip(__MONTHS, range(1, len(__MONTHS)+1)))
-
-    unescape_html = staticmethod(lambda s: HTMLParser.unescape.__func__(HTMLParser, s))
-
-    @classmethod
-    def __parse_date(cls, meal, meal_date, string_output):
-        # Don't use strptime() here because it depends on locale.
-        month_raw, day_raw = meal_date.split()
-        month, day = cls.MONTHS[month_raw], int(day_raw)
-        raw_time = meal.find('span', 'collapser-controller').text.split(':')
-        hour, minute = int(raw_time[0]), int(raw_time[1][0:2])
-        hour += 12 if 'p.m.' in raw_time[1] and hour != 12 else 0
-        out = datetime.datetime(datetime.datetime.now().year, month, day, hour, minute)
-        return str(out) if string_output else out
-
-    @classmethod
-    def __parse_restaurant(cls, meal):
-        # "...now you have two problems."
-        r = meal.p.text
-        return cls.unescape_html(r[r.index('from')+4:r.rindex('for')].strip())
-
-    def __init__(self, account_name, string_dates=False):
-        soup = BeautifulSoup(urllib2.urlopen('http://www.zerocater.com/' + account_name).read())
+    def __init__(self, account_key, string_dates=False):
+        soup = BeautifulSoup(urllib2.urlopen('http://www.zerocater.com/menu/%s/' % account_key).read())
         self.meals = []
-        for meal_group in soup.findAll('div', 'meal_group new-context'):
-            meal_date = meal_group.span.text
-            for meal in meal_group.findAll('div', 'meal_item'):
-                self.meals.append({'name': self.unescape_html(meal.strong.text),
-                                   'date': self.__parse_date(meal, meal_date, string_dates),
-                                   'restaurant': self.__parse_restaurant(meal),
-                                   'num_people': int(meal.find('span', 'num_people').text.split()[1]),
-                                  })
-                cur_dishes = self.meals[-1]['dishes'] = []
-                for dish_html in meal.findAll('li', 'order-menu-item'):
-                    dish = {'quantity': int(dish_html.find('div', 'item_quantity').text),
-                            'name': self.unescape_html(dish_html.strong.text),
-                            }
-                    description_tag = dish_html.find('div', 'item-description')
-                    if description_tag:
-                        dish['description'] = self.unescape_html(description_tag.text)
-                    note_tag = dish_html.find('div', 'item-instructions')
-                    if note_tag:
-                        dish['note'] = self.unescape_html(note_tag.text[4:])
-                    cur_dishes.append(dish)
+
+        for menu in soup.findAll('div', 'menu'):
+            def parse_date():
+                time_raw = menu.find('div', 'header-time').text.split()
+                year, month, day = map(int, menu.attrs['data-date'].split('-'))
+                hour, minute = map(int, time_raw[-2].split(':'))
+                hour += 12 if time_raw[-1] == 'p.m.' and hour != 12 else 0
+                out = datetime.datetime(year, month, day, hour, minute)
+                return str(out) if string_dates else out
+
+            self.meals.append({'name': menu.find('div', 'detail-view-header').text.strip(),
+                               'restaurant': menu.find('div', 'vendor').text.strip(),
+                               'date': parse_date()})
 
 
 if __name__ == '__main__':
     import sys
     import json
     if len(sys.argv) != 2:
-        print 'usage: %s account_name' % sys.argv[0]
+        print 'usage: %s account_key' % sys.argv[0]
         sys.exit(1)
     print json.dumps(NullProvide(sys.argv[1], string_dates=True).meals, indent=4, sort_keys=True)
 
